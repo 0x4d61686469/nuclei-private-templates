@@ -13,7 +13,6 @@ http:
 
     matchers-condition: or
     matchers:
-      # 3xx redirect detection
       - type: status
         status:
           - 300
@@ -23,7 +22,18 @@ http:
           - 307
           - 308
 
-      # JS-based redirects
+      - type: regex
+        part: header
+        name: Location
+        regex:
+          - '(?i)^https?://(?:www\.)?google\.com\b'
+
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: or
+    matchers:
       - type: regex
         part: body
         regex:
