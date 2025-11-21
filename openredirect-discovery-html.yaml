@@ -27,17 +27,32 @@ http:
       - type: regex
         part: body
         regex:
-          - window\.location\s*=\s*["'`](https?:\/\/[^"'`<\s]+)
-          - window\.location\.href\s*=\s*["'`](https?:\/\/[^"'`<\s]+)
-          - window\.location\.replace\s*\(\s*["'`](https?:\/\/[^"'`<\s]+)
-          - window\.location\.assign\s*\(\s*["'`](https?:\/\/[^"'`<\s]+)
-          - document\.location\s*=\s*["'`](https?:\/\/[^"'`<\s]+)
-          - location\.href\s*=\s*["'`](https?:\/\/[^"'`<\s]+)
-          - top\.location\s*=\s*["'`](https?:\/\/[^"'`<\s]+)
-          - parent\.location\s*=\s*["'`](https?:\/\/[^"'`<\s]+)
-          - eval\s*\(\s*["'`][^"'`]*https?:\/\/[^"'`<\s]+
-          - setTimeout\s*\(\s*["'`][^"'`]*https?:\/\/[^"'`<\s]+
-          - setInterval\s*\(\s*["'`][^"'`]*https?:\/\/[^"'`<\s]+
-          - <meta[^>]+http-equiv=["'`]refresh["'`][^>]*url=https?:\/\/[^"'`<\s]+
-          - window\.open\s*\(\s*["'`](https?:\/\/[^"'`<\s]+)
+          # window.location / document.location
+          - window\.location\s*=\s*["\'`]https?:\/\/google\.com
+          - window\.location\.href\s*=\s*["\'`]https?:\/\/google\.com
+          - window\.location\.replace\s*\(\s*["\'`]https?:\/\/google\.com
+          - window\.location\.assign\s*\(\s*["\'`]https?:\/\/google\.com
+          - document\.location\s*=\s*["\'`]https?:\/\/google\.com
+          - document\.location\.href\s*=\s*["\'`]https?:\/\/google\.com
 
+          # location.href
+          - location\.href\s*=\s*["\'`]https?:\/\/google\.com
+          - location\.replace\s*\(\s*["\'`]https?:\/\/google\.com
+          - location\.assign\s*\(\s*["\'`]https?:\/\/google\.com
+
+          # top.location / parent.location
+          - top\.location\s*=\s*["\'`]https?:\/\/google\.com
+          - parent\.location\s*=\s*["\'`]https?:\/\/google\.com
+
+          # eval() redirect
+          - eval\s*\(\s*["\'`][^"\'`]*https?:\/\/google\.com
+
+          # setTimeout / setInterval redirect
+          - setTimeout\s*\(\s*["\'`][^"\'`]*https?:\/\/google\.com
+          - setInterval\s*\(\s*["\'`][^"\'`]*https?:\/\/google\.com
+
+          # meta refresh
+          - <meta[^>]+http-equiv=["\'`]refresh["\'`][^>]*url=https?:\/\/google\.com
+
+          # JS redirect through window.open
+          - window\.open\s*\(\s*["\'`]https?:\/\/google\.com
