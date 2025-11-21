@@ -11,7 +11,7 @@ http:
     path:
       - "{{BaseURL}}"
 
-    matchers-condition: or
+    matchers-condition: and
     matchers:
       - type: status
         status:
@@ -24,9 +24,18 @@ http:
 
       - type: regex
         part: header
-        name: Location
         regex:
-          - '(?i)^https?://(?:www\.)?google\.com\b'
+          # RE2-Compatible Regex (No lookaheads)
+          # Explanation:
+          # (?im)       -> Case insensitive & Multiline mode (matches ^ per line)
+          # ^Location:  -> Starts with Location header
+          # \s* -> Optional whitespace
+          # (https?://)? -> Optional http/https
+          # (www\.)?    -> Optional www.
+          # google\.com -> The domain
+          # ($|[\/?#])  -> MUST be followed by: End of Line ($), Slash (/), Question (?), or Hash (#)
+          - '(?im)^Location:\s*(https?:\/\/)?(www\.)?google\.com($|[\/?#\s])'
+
 
   - method: GET
     path:
