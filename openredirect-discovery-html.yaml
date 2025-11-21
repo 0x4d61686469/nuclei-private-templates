@@ -1,0 +1,59 @@
+id: open-redirect-generic-x9or
+
+info:
+  name: Generic Open Redirect (3xx + JS Redirects)
+  author: mahdi
+  severity: medium
+  description: Detects server-side 3xx redirects and client-side JS-based redirects.
+
+http:
+  - method: GET
+    redirect: false
+    path:
+      - "{{BaseURL}}"
+
+    matchers-condition: or
+    matchers:
+      # 3xx redirect detection
+      - type: status
+        status:
+          - 300
+          - 301
+          - 302
+          - 303
+          - 307
+          - 308
+
+      # JS-based redirects
+      - type: regex
+        part: body
+        regex:
+          # window.location / document.location
+          - 'window\.location\s*=\s*["\'`]https?:\/\/google\.com'
+          - 'window\.location\.href\s*=\s*["\'`]https?:\/\/google\.com'
+          - 'window\.location\.replace\s*\(\s*["\'`]https?:\/\/google\.com'
+          - 'window\.location\.assign\s*\(\s*["\'`]https?:\/\/google\.com'
+          - 'document\.location\s*=\s*["\'`]https?:\/\/google\.com'
+          - 'document\.location\.href\s*=\s*["\'`]https?:\/\/google\.com'
+
+          # location.href
+          - 'location\.href\s*=\s*["\'`]https?:\/\/google\.com'
+          - 'location\.replace\s*\(\s*["\'`]https?:\/\/google\.com'
+          - 'location\.assign\s*\(\s*["\'`]https?:\/\/google\.com'
+
+          # top.location / parent.location
+          - 'top\.location\s*=\s*["\'`]https?:\/\/google\.com'
+          - 'parent\.location\s*=\s*["\'`]https?:\/\/google\.com'
+
+          # eval() redirect
+          - 'eval\s*\(\s*["\'`][^"\'`]*https?:\/\/google\.com'
+
+          # setTimeout / setInterval redirect
+          - 'setTimeout\s*\(\s*["\'`][^"\'`]*https?:\/\/google\.com'
+          - 'setInterval\s*\(\s*["\'`][^"\'`]*https?:\/\/google\.com'
+
+          # meta refresh
+          - '<meta[^>]+http-equiv=["\'`]refresh["\'`][^>]*url=https?:\/\/google\.com'
+
+          # JS redirect through window.open
+          - 'window\.open\s*\(\s*["\'`]https?:\/\/google\.com'
