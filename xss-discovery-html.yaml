@@ -1,0 +1,24 @@
+id: reflection-minject-specific
+
+info:
+  name: Specific Reflection Detector ("minject" variants)
+  author: mahdi
+  severity: medium
+  description: Detects specific reflected payloads used for injection testing.
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}"
+
+    matchers:
+      - type: regex
+        part: body
+        regex:
+          - "\"minject\""              # "minject"
+          - "'minject'"                # 'minject'
+          - "<b/minject"               # <b/minject
+          - "minject\\\\'"             # minject\'
+          - "minject\\\\\""            # minject\"
+          - "\"\\\\\"minject"          # "\"minject
+          - "'\\\\'minject"            # '\''minject
